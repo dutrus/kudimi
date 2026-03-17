@@ -410,7 +410,8 @@
         <div class="options">
           <button class="opt-btn" onclick="selectOpt(this, 7); checkNoPay(this)">No pagaría</button>
           <button class="opt-btn" onclick="selectOpt(this, 7); checkNoPay(this)">USD 5</button>
-          <button class="opt-btn" onclick="selectOpt(this, 7); checkNoPay(this)">USD 9</button>
+          <button class="opt-btn" onclick="selectOpt(this, 7); checkNoPay(this)">USD 10</button>
+          <button class="opt-btn" onclick="selectOpt(this, 7); checkNoPay(this)">USD 12</button>
           <button class="opt-btn" onclick="selectOpt(this, 7); checkNoPay(this)">USD 15</button>
           <button class="opt-btn" onclick="selectOpt(this, 7); checkNoPay(this)">Más de USD 15</button>
         </div>
@@ -418,11 +419,11 @@
         <div id="noPayReason" style="display:none;margin-top:16px;">
           <div class="q-label" style="margin-bottom:8px;">¿Por qué no? <span style="opacity:0.5">(elegí una)</span></div>
           <div class="options">
-            <button class="opt-btn" onclick="selectOpt(this, '7b')">Ya existe algo parecido</button>
-            <button class="opt-btn" onclick="selectOpt(this, '7b')">Me parece caro</button>
-            <button class="opt-btn" onclick="selectOpt(this, '7b')">No creo que sea bueno</button>
-            <button class="opt-btn" onclick="selectOpt(this, '7b')">Mi hijo no vería esto</button>
-            <button class="opt-btn" onclick="selectOpt(this, '7b')">No confío todavía</button>
+            <button class="opt-btn" onclick="selectOpt(this, '7b'); submitNoPayExit()">Ya existe algo parecido</button>
+            <button class="opt-btn" onclick="selectOpt(this, '7b'); submitNoPayExit()">Me parece caro</button>
+            <button class="opt-btn" onclick="selectOpt(this, '7b'); submitNoPayExit()">No creo que sea bueno</button>
+            <button class="opt-btn" onclick="selectOpt(this, '7b'); submitNoPayExit()">Mi hijo no vería esto</button>
+            <button class="opt-btn" onclick="selectOpt(this, '7b'); submitNoPayExit()">No confío todavía</button>
           </div>
         </div>
       </div>
@@ -468,6 +469,14 @@
         💳 Pagar con Mercado Pago (ARS)
       </a>
       <span class="counter" id="counterDisplay">🧒 48 familias ya anotadas</span>
+    </div>
+
+    <!-- No-pay exit -->
+    <div class="success-state" id="thankYouNoPay">
+      <div class="success-icon">🙏</div>
+      <h3>¡Gracias por tu opinión!</h3>
+      <p>Nos ayuda a mejorar Kudimi.</p>
+      <button onclick="window.scrollTo({top:0,behavior:'smooth'})" style="margin-top:8px;padding:14px 28px;border-radius:50px;border:none;background:var(--sun);color:var(--plum);font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;cursor:pointer;box-shadow:0 4px 20px rgba(255,212,71,0.35);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">Volver al inicio</button>
     </div>
 
   </div>
@@ -677,6 +686,28 @@
     e.preventDefault();
     document.getElementById('survey').scrollIntoView({ behavior: 'smooth' });
   });
+
+  async function submitNoPayExit() {
+    try {
+      await fetch(`${SUPABASE_URL}/functions/v1/send-waitlist-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON}`
+        },
+        body: JSON.stringify({
+          q1: answers[1], q2: answers[2], q3: answers[3],
+          q4: answers[4], q5: answers[5], q6: answers[6],
+          q7: answers[7], q7b: answers['7b']
+        })
+      });
+    } catch (err) { console.error(err); }
+
+    document.getElementById('progressWrap').style.display = 'none';
+    document.getElementById('questionWrap').style.display = 'none';
+    document.getElementById('navBtns').style.display = 'none';
+    document.getElementById('thankYouNoPay').classList.add('show');
+  }
 
   function checkNoPay(btn) {
     const noPayDiv = document.getElementById('noPayReason');
