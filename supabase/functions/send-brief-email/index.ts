@@ -48,6 +48,7 @@ serve(async (req) => {
     if (isEmail) {
       try {
         await sendEmail(RESEND_KEY, contact, '¡Tu cuento está en producción! 🎬', `
+          <meta charset="utf-8">
           <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;background:#FFF8F0;border-radius:16px;">
             <h1 style="color:#2D1B69;font-size:26px;margin-bottom:8px;">¡Recibimos tu pedido! 🎬</h1>
             <p style="color:#5a4a8a;font-size:16px;line-height:1.7;">
@@ -74,6 +75,7 @@ serve(async (req) => {
     // Notification email to Victoria (always)
     try {
       await sendEmail(RESEND_KEY, 'victoriadutraamarilla@gmail.com', '🎬 Nuevo pedido de cuento — Kudimi', `
+        <meta charset="utf-8">
         <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;background:#FFF8F0;border-radius:16px;">
           <h1 style="color:#2D1B69;font-size:24px;">Nuevo pedido recibido 🎉</h1>
           <table style="width:100%;border-collapse:collapse;margin-top:16px;">

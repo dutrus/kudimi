@@ -39,6 +39,7 @@ serve(async (req) => {
         to: [email],
         subject: '¡Ya estás en la lista de espera de Kudimi! 🎉',
         html: `
+          <meta charset="utf-8">
           <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;background:#FFF8F0;border-radius:16px;">
             <h1 style="color:#2D1B69;font-size:26px;margin-bottom:8px;">¡Hola, ${name}! 🎉</h1>
             <p style="color:#5a4a8a;font-size:16px;line-height:1.7;margin-bottom:16px;">
