@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kudimi — Cuentos animados para tu hijo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sun: #FFD447; --coral: #FF6B6B; --sky: #4FC3F7;
+      --mint: #69E8A0; --purple: #c084fc;
+      --plum: #2D1B69; --plum-light: #3D2B85;
+      --cream: #FFF8F0; --white: #FFFFFF;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Nunito', sans-serif; background: var(--cream); color: var(--plum); overflow-x: hidden; }
+
+    /* BLOBS */
+    .bg-blobs { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.14; animation: drift 14s ease-in-out infinite alternate; }
+    .blob-1 { width: 500px; height: 500px; background: var(--coral); top: -100px; left: -100px; animation-duration: 16s; }
+    .blob-2 { width: 380px; height: 380px; background: var(--sky); top: 35%; right: -80px; animation-duration: 12s; animation-delay: -4s; }
+    .blob-3 { width: 340px; height: 340px; background: var(--mint); bottom: 0; left: 30%; animation-duration: 18s; animation-delay: -8s; }
+    .blob-4 { width: 260px; height: 260px; background: var(--sun); top: 60%; left: 5%; animation-duration: 10s; animation-delay: -2s; }
+    @keyframes drift { from{transform:translate(0,0) scale(1)} to{transform:translate(40px,30px) scale(1.08)} }
+
+    /* LOGO SISTEMA */
+    .wordmark { display: flex; align-items: baseline; filter: drop-shadow(0 4px 0px rgba(0,0,0,0.10)); gap: 4px; }
+    .letter { font-family: 'Baloo 2', 'Arial Rounded MT Bold', Arial, sans-serif; font-weight: 800; line-height: 1; -webkit-text-stroke: 7px white; paint-order: stroke fill; letter-spacing: 2px; }
+    .lk { color: #FF6B6B; } .lu { color: #FFD447; } .ld { color: #69E8A0; }
+    .li { color: #4FC3F7; } .lm { color: #c084fc; } .li2 { color: #FF6B6B; }
+    .text-block { display: flex; flex-direction: column; align-items: flex-start; }
+    .tagline { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #b09aca; }
+
+    /* NAV */
+    nav { position: relative; z-index: 10; display: flex; align-items: center; justify-content: space-between; padding: 18px 48px; }
+    .nav-mascot { animation: float 3s ease-in-out infinite alternate; }
+    .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .nav-cta { background: var(--plum); color: var(--white); font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.9rem; padding: 11px 24px; border-radius: 50px; text-decoration: none; border: none; cursor: pointer; transition: transform 0.2s, background 0.2s; }
+    .nav-cta:hover { background: var(--plum-light); transform: translateY(-2px); }
+
+    /* HERO */
+    .hero { position: relative; z-index: 1; text-align: center; padding: 40px 24px 16px; max-width: 860px; margin: 0 auto; }
+    .badge { display: inline-flex; align-items: center; gap: 8px; background: var(--sun); color: var(--plum); font-weight: 800; font-size: 0.82rem; padding: 6px 18px; border-radius: 50px; margin-bottom: 28px; animation: pop 0.6s cubic-bezier(.34,1.56,.64,1) both; }
+    .badge-dot { width: 8px; height: 8px; background: var(--coral); border-radius: 50%; animation: pulse 1.6s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.4);opacity:.7} }
+    @keyframes pop   { from{opacity:0;transform:scale(.8)} to{opacity:1;transform:scale(1)} }
+
+    .hero-logo-wrap { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 24px; animation: rise 0.7s 0.1s cubic-bezier(.22,1,.36,1) both; }
+    .hero-mascot { animation: float 3s ease-in-out infinite alternate; filter: drop-shadow(0 8px 16px rgba(255,184,0,0.3)); }
+    .hero-letter { font-size: clamp(60px, 11vw, 90px); -webkit-text-stroke: 8px white; }
+    @keyframes float { from{transform:translateY(0) rotate(-3deg)} to{transform:translateY(-10px) rotate(3deg)} }
+    @keyframes rise  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+    h1 { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: clamp(1.6rem, 4vw, 2.4rem); line-height: 1.2; color: var(--plum); margin-bottom: 16px; animation: rise 0.7s 0.2s cubic-bezier(.22,1,.36,1) both; }
+    h1 em { font-style: normal; color: var(--coral); position: relative; }
+    h1 em::after { content: ''; position: absolute; bottom: 2px; left: 0; right: 0; height: 5px; background: var(--sun); border-radius: 4px; z-index: -1; }
+    .hero-sub { font-size: 1.1rem; line-height: 1.65; color: #5a4a8a; max-width: 520px; margin: 0 auto 36px; animation: rise 0.7s 0.3s cubic-bezier(.22,1,.36,1) both; }
+
+    /* VIDEO */
+    .video-wrapper { position: relative; z-index: 1; max-width: 760px; margin: 0 auto 64px; padding: 0 24px; animation: rise 0.7s 0.4s cubic-bezier(.22,1,.36,1) both; }
+    .video-frame { border-radius: 24px; overflow: hidden; background: var(--plum); aspect-ratio: 16/9; box-shadow: 0 24px 60px rgba(45,27,105,0.2), 0 0 0 6px var(--white), 0 0 0 10px var(--sun); }
+    .video-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; background: linear-gradient(135deg, #2D1B69, #1a0f45); cursor: pointer; transition: opacity 0.2s; }
+    .video-placeholder:hover { opacity: 0.88; }
+    .play-btn { width: 72px; height: 72px; background: var(--coral); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 14px rgba(255,107,107,0.15); transition: transform 0.25s cubic-bezier(.34,1.56,.64,1); }
+    .video-placeholder:hover .play-btn { transform: scale(1.12); }
+    .play-btn svg { margin-left: 5px; }
+    .video-label { color: rgba(255,255,255,0.65); font-size: 0.9rem; font-weight: 700; }
+
+    /* STEPS */
+    .section { position: relative; z-index: 1; max-width: 900px; margin: 0 auto 72px; padding: 0 24px; text-align: center; }
+    .section-label { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.8rem; letter-spacing: 3px; text-transform: uppercase; color: var(--coral); margin-bottom: 10px; }
+    .section-title { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: clamp(1.5rem, 4vw, 2.2rem); color: var(--plum); margin-bottom: 44px; }
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+    .step { background: var(--white); border-radius: 22px; padding: 32px 22px; box-shadow: 0 4px 24px rgba(45,27,105,0.07); transition: transform 0.25s; }
+    .step:hover { transform: translateY(-6px); }
+    .step-icon { font-size: 2.6rem; margin-bottom: 14px; display: block; }
+    .step-num { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.1rem; margin: 0 auto 14px; }
+    .step:nth-child(1) .step-num { background: #FFE8E8; color: var(--coral); }
+    .step:nth-child(2) .step-num { background: #E8F7FF; color: var(--sky); }
+    .step:nth-child(3) .step-num { background: #F0E8FF; color: var(--purple); }
+    .step h3 { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--plum); margin-bottom: 8px; }
+    .step p  { font-size: 0.9rem; color: #7a6aaa; line-height: 1.55; }
+
+    /* ══════════════════════════════
+       ENCUESTA + WAITLIST
+    ══════════════════════════════ */
+    .survey-section { position: relative; z-index: 1; max-width: 620px; margin: 0 auto 80px; padding: 0 24px; }
+
+    .survey-mascot-wrap { display: flex; justify-content: center; margin-bottom: -20px; position: relative; z-index: 2; }
+    .survey-mascot { animation: float 3s ease-in-out infinite alternate; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.15)); }
+
+    .survey-card { background: var(--plum); border-radius: 28px; padding: 40px 36px 36px; box-shadow: 0 24px 60px rgba(45,27,105,0.25); position: relative; overflow: hidden; }
+    .survey-card::before { content:''; position:absolute; top:-60px; right:-60px; width:200px; height:200px; background:var(--coral); border-radius:50%; opacity:0.1; }
+    .survey-card::after  { content:''; position:absolute; bottom:-40px; left:-40px; width:160px; height:160px; background:var(--sky); border-radius:50%; opacity:0.08; }
+
+    /* Progress bar */
+    .progress-wrap { position: relative; z-index: 1; margin-bottom: 28px; }
+    .progress-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .progress-label span { color: rgba(255,255,255,0.5); font-size: 0.78rem; font-weight: 700; }
+    .progress-label .step-indicator { color: var(--sun); font-weight: 800; font-size: 0.82rem; }
+    .progress-bar-bg { height: 6px; background: rgba(255,255,255,0.12); border-radius: 10px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: var(--sun); border-radius: 10px; transition: width 0.4s cubic-bezier(.22,1,.36,1); }
+
+    /* Pregunta */
+    .question-wrap { position: relative; z-index: 1; min-height: 200px; }
+    .question-slide { display: none; flex-direction: column; gap: 16px; animation: slideIn 0.35s cubic-bezier(.22,1,.36,1) both; }
+    .question-slide.active { display: flex; }
+    @keyframes slideIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+    .q-label { color: rgba(255,255,255,0.55); font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+    .q-text { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--white); line-height: 1.4; }
+
+    /* Opciones botón */
+    .options { display: flex; flex-wrap: wrap; gap: 10px; }
+    .opt-btn {
+      padding: 10px 18px; border-radius: 50px;
+      border: 2px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.8);
+      font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.9rem;
+      cursor: pointer; transition: all 0.18s;
+    }
+    .opt-btn:hover { border-color: var(--sun); color: var(--sun); background: rgba(255,212,71,0.1); }
+    .opt-btn.selected { background: var(--sun); color: var(--plum); border-color: var(--sun); }
+
+    /* Escala */
+    .scale-wrap { display: flex; gap: 8px; align-items: center; }
+    .scale-btn { width: 44px; height: 44px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8); font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.95rem; cursor: pointer; transition: all 0.18s; flex-shrink: 0; }
+    .scale-btn:hover { border-color: var(--sun); color: var(--sun); }
+    .scale-btn.selected { background: var(--sun); color: var(--plum); border-color: var(--sun); }
+    .scale-labels { display: flex; justify-content: space-between; color: rgba(255,255,255,0.35); font-size: 0.72rem; font-weight: 700; margin-top: 6px; }
+
+    /* Input abierto */
+    .open-input { width: 100%; padding: 14px 18px; border-radius: 16px; border: 2px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.08); color: var(--white); font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 600; resize: none; outline: none; transition: border-color 0.2s; }
+    .open-input::placeholder { color: rgba(255,255,255,0.35); }
+    .open-input:focus { border-color: var(--sun); }
+
+    /* Email input */
+    .email-input { width: 100%; padding: 14px 20px; border-radius: 50px; border: 2px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.1); color: var(--white); font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 700; outline: none; transition: border-color 0.2s; }
+    .email-input::placeholder { color: rgba(255,255,255,0.4); }
+    .email-input:focus { border-color: var(--sun); }
+
+    /* Navegación */
+    .nav-btns { display: flex; gap: 10px; margin-top: 20px; position: relative; z-index: 1; }
+    .btn-back { padding: 13px 20px; border-radius: 50px; border: 2px solid rgba(255,255,255,0.2); background: transparent; color: rgba(255,255,255,0.6); font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; }
+    .btn-back:hover { border-color: rgba(255,255,255,0.5); color: white; }
+    .btn-next { flex: 1; padding: 14px; border-radius: 50px; border: none; background: var(--sun); color: var(--plum); font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1rem; cursor: pointer; transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s; box-shadow: 0 4px 20px rgba(255,212,71,0.3); }
+    .btn-next:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 28px rgba(255,212,71,0.45); }
+    .btn-next:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    /* Success */
+    .success-state { display: none; flex-direction: column; align-items: center; gap: 12px; text-align: center; position: relative; z-index: 1; padding: 8px 0; }
+    .success-state.show { display: flex; }
+    .success-icon { width: 72px; height: 72px; background: var(--mint); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; animation: pop 0.5s cubic-bezier(.34,1.56,.64,1) both; }
+    .success-state h3 { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.5rem; color: var(--white); }
+    .success-state p { color: rgba(255,255,255,0.65); font-size: 0.95rem; line-height: 1.6; }
+    .success-state p strong { color: var(--sun); }
+    .counter { display: inline-block; background: rgba(255,255,255,0.1); border-radius: 50px; padding: 7px 20px; color: var(--sun); font-weight: 800; font-size: 0.9rem; margin-top: 4px; }
+
+    /* PROOF */
+    .proof { position: relative; z-index: 1; display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; max-width: 580px; margin: 0 auto 72px; padding: 0 24px; }
+    .proof-item { text-align: center; }
+    .proof-num { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 2rem; color: var(--plum); line-height: 1; }
+    .proof-label { font-size: 0.82rem; color: #8a7aaa; font-weight: 700; margin-top: 4px; }
+
+    /* FOOTER */
+    footer { position: relative; z-index: 1; text-align: center; padding: 28px 24px 44px; color: #9a8aba; font-size: 0.82rem; }
+
+    @media (max-width: 600px) {
+      nav { padding: 14px 20px; }
+      .hero { padding: 28px 16px 16px; }
+      .survey-card { padding: 32px 20px 28px; }
+      .scale-wrap { gap: 5px; }
+      .scale-btn { width: 38px; height: 38px; font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="mainContent">
+<div class="bg-blobs">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div>
+  <div class="blob blob-3"></div><div class="blob blob-4"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo" style="text-decoration:none;display:flex;align-items:center;gap:8px;">
+    <svg class="nav-mascot" width="42" height="50" viewBox="0 0 110 130" fill="none">
+      <defs>
+        <radialGradient id="ng" cx="40%" cy="35%" r="60%"><stop offset="0%" stop-color="#FFE566"/><stop offset="100%" stop-color="#FFB800"/></radialGradient>
+        <radialGradient id="nb" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FF9AA2" stop-opacity="0.7"/><stop offset="100%" stop-color="#FF9AA2" stop-opacity="0"/></radialGradient>
+        <radialGradient id="ns" cx="30%" cy="25%" r="50%"><stop offset="0%" stop-color="white" stop-opacity="0.55"/><stop offset="100%" stop-color="white" stop-opacity="0"/></radialGradient>
+      </defs>
+      <ellipse cx="55" cy="122" rx="30" ry="7" fill="rgba(0,0,0,0.08)"/>
+      <path d="M55 8 C58 8 62 14 65 18 C69 22 76 20 80 23 C84 26 82 33 83 38 C84 43 90 47 90 52 C90 57 84 60 83 65 C82 70 85 77 82 81 C79 85 72 83 68 86 C64 89 63 96 58 98 C55 99 52 99 50 98 C45 96 44 89 40 86 C36 83 29 85 26 81 C23 77 26 70 25 65 C24 60 18 57 18 52 C18 47 24 43 25 38 C26 33 24 26 28 23 C32 20 39 22 43 18 C46 14 52 8 55 8Z" fill="url(#ng)" stroke="white" stroke-width="4" stroke-linejoin="round"/>
+      <ellipse cx="44" cy="34" rx="12" ry="8" fill="url(#ns)" transform="rotate(-20 44 34)"/>
+      <rect x="38" y="96" width="14" height="18" rx="7" fill="#FFB800" stroke="white" stroke-width="3"/>
+      <rect x="56" y="96" width="14" height="18" rx="7" fill="#FFB800" stroke="white" stroke-width="3"/>
+      <ellipse cx="20" cy="58" rx="9" ry="7" fill="#FFB800" stroke="white" stroke-width="3" transform="rotate(20 20 58)"/>
+      <ellipse cx="90" cy="58" rx="9" ry="7" fill="#FFB800" stroke="white" stroke-width="3" transform="rotate(-20 90 58)"/>
+      <circle cx="14" cy="64" r="7" fill="#FFB800" stroke="white" stroke-width="3"/>
+      <circle cx="96" cy="64" r="7" fill="#FFB800" stroke="white" stroke-width="3"/>
+      <ellipse cx="40" cy="60" rx="9" ry="6" fill="url(#nb)"/>
+      <ellipse cx="70" cy="60" rx="9" ry="6" fill="url(#nb)"/>
+      <path d="M43 50 Q46 46 49 50" stroke="#7a4f00" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <path d="M61 50 Q64 46 67 50" stroke="#7a4f00" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <path d="M47 62 Q55 70 63 62" stroke="#7a4f00" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    </svg>
+    <div class="text-block">
+      <div class="wordmark">
+        <span class="letter lk" style="font-size:30px;">K</span>
+        <span class="letter lu" style="font-size:30px;">U</span>
+        <span class="letter ld" style="font-size:30px;">D</span>
+        <span class="letter li" style="font-size:26px;-webkit-text-stroke:4px white;">I</span>
+        <span class="letter lm" style="font-size:30px;">M</span>
+        <span class="letter li2" style="font-size:26px;-webkit-text-stroke:4px white;">I</span>
+      </div>
+    </div>
+  </a>
+  <a href="#survey" class="nav-cta">Quiero acceso →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="badge"><span class="badge-dot"></span> Próximamente · 50 cupos a $9</div>
+  <div class="hero-logo-wrap">
+    <svg class="hero-mascot" width="110" height="130" viewBox="0 0 110 130" fill="none">
+      <defs>
+        <radialGradient id="hg" cx="40%" cy="35%" r="60%"><stop offset="0%" stop-color="#FFE566"/><stop offset="100%" stop-color="#FFB800"/></radialGradient>
+        <radialGradient id="hb" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FF9AA2" stop-opacity="0.7"/><stop offset="100%" stop-color="#FF9AA2" stop-opacity="0"/></radialGradient>
+        <radialGradient id="hs" cx="30%" cy="25%" r="50%"><stop offset="0%" stop-color="white" stop-opacity="0.55"/><stop offset="100%" stop-color="white" stop-opacity="0"/></radialGradient>
+      </defs>
+      <ellipse cx="55" cy="122" rx="30" ry="7" fill="rgba(0,0,0,0.08)"/>
+      <path d="M55 8 C58 8 62 14 65 18 C69 22 76 20 80 23 C84 26 82 33 83 38 C84 43 90 47 90 52 C90 57 84 60 83 65 C82 70 85 77 82 81 C79 85 72 83 68 86 C64 89 63 96 58 98 C55 99 52 99 50 98 C45 96 44 89 40 86 C36 83 29 85 26 81 C23 77 26 70 25 65 C24 60 18 57 18 52 C18 47 24 43 25 38 C26 33 24 26 28 23 C32 20 39 22 43 18 C46 14 52 8 55 8Z" fill="url(#hg)" stroke="white" stroke-width="4" stroke-linejoin="round"/>
+      <ellipse cx="44" cy="34" rx="12" ry="8" fill="url(#hs)" transform="rotate(-20 44 34)"/>
+      <rect x="38" y="96" width="14" height="18" rx="7" fill="#FFB800" stroke="white" stroke-width="3"/>
+      <rect x="56" y="96" width="14" height="18" rx="7" fill="#FFB800" stroke="white" stroke-width="3"/>
+      <ellipse cx="20" cy="58" rx="9" ry="7" fill="#FFB800" stroke="white" stroke-width="3" transform="rotate(20 20 58)"/>
+      <ellipse cx="90" cy="58" rx="9" ry="7" fill="#FFB800" stroke="white" stroke-width="3" transform="rotate(-20 90 58)"/>
+      <circle cx="14" cy="64" r="7" fill="#FFB800" stroke="white" stroke-width="3"/>
+      <circle cx="96" cy="64" r="7" fill="#FFB800" stroke="white" stroke-width="3"/>
+      <ellipse cx="40" cy="60" rx="9" ry="6" fill="url(#hb)"/>
+      <ellipse cx="70" cy="60" rx="9" ry="6" fill="url(#hb)"/>
+      <path d="M43 50 Q46 46 49 50" stroke="#7a4f00" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <path d="M61 50 Q64 46 67 50" stroke="#7a4f00" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <path d="M47 62 Q55 70 63 62" stroke="#7a4f00" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <circle cx="55" cy="66" r="3" fill="#FF8C8C" opacity="0.6"/>
+    </svg>
+    <div class="text-block">
+      <div class="wordmark">
+        <span class="letter hero-letter lk" style="font-size:clamp(60px,11vw,90px);">K</span>
+        <span class="letter hero-letter lu" style="font-size:clamp(60px,11vw,90px);">U</span>
+        <span class="letter hero-letter ld" style="font-size:clamp(60px,11vw,90px);">D</span>
+        <span class="letter hero-letter li" style="font-size:clamp(54px,10vw,80px);">I</span>
+        <span class="letter hero-letter lm" style="font-size:clamp(60px,11vw,90px);">M</span>
+        <span class="letter hero-letter li2" style="font-size:clamp(54px,10vw,80px);">I</span>
+      </div>
+      <div class="tagline">Cuentos con IA ✨</div>
+    </div>
+  </div>
+  <h1>Cuentos animados <em>únicos</em><br/>para tu hijo</h1>
+  <p class="hero-sub">Escribí una idea. Kudimi genera un cuento animado personalizado con voz y música en minutos. Sin fricciones, sin límites creativos.</p>
+</section>
+
+<!-- VIDEO -->
+<div class="video-wrapper">
+  <div class="video-frame">
+    <iframe
+      width="100%"
+      height="100%"
+      src="https://www.youtube.com/embed/An8oK_Zy-T0"
+      title="Ver cuento de ejemplo"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen
+      style="display:block;"
+    ></iframe>
+  </div>
+</div>
+
+<!-- STEPS -->
+<section class="section">
+  <p class="section-label">Así funciona</p>
+  <h2 class="section-title">Tres pasos. Un cuento memorable.</h2>
+  <div class="steps">
+    <div class="step"><span class="step-icon">✍️</span><div class="step-num">1</div><h3>Escribís una idea</h3><p>Cualquier cosa. "Un dragón que tiene miedo a volar" o "una nena astronauta que busca su gato en la Luna".</p></div>
+    <div class="step"><span class="step-icon">🎬</span><div class="step-num">2</div><h3>La IA lo produce</h3><p>Kudimi genera el guion, las escenas animadas, la voz y la música. Todo en menos de 2 minutos.</p></div>
+    <div class="step"><span class="step-icon">🎁</span><div class="step-num">3</div><h3>Lo compartís</h3><p>Descargá el video y hacé feliz a tu hijo con un cuento creado especialmente para él.</p></div>
+  </div>
+</section>
+
+<!-- ══ ENCUESTA + WAITLIST ══ -->
+<div class="survey-section" id="survey">
+  <div class="survey-mascot-wrap">
+    <svg class="survey-mascot" width="90" height="106" viewBox="0 0 110 130" fill="none">
+      <defs>
+        <radialGradient id="wg" cx="40%" cy="35%" r="60%"><stop offset="0%" stop-color="#FFE566"/><stop offset="100%" stop-color="#FFB800"/></radialGradient>
+        <radialGradient id="wb" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FF9AA2" stop-opacity="0.7"/><stop offset="100%" stop-color="#FF9AA2" stop-opacity="0"/></radialGradient>
+        <radialGradient id="ws" cx="30%" cy="25%" r="50%"><stop offset="0%" stop-color="white" stop-opacity="0.55"/><stop offset="100%" stop-color="white" stop-opacity="0"/></radialGradient>
+      </defs>
+      <path d="M55 8 C58 8 62 14 65 18 C69 22 76 20 80 23 C84 26 82 33 83 38 C84 43 90 47 90 52 C90 57 84 60 83 65 C82 70 85 77 82 81 C79 85 72 83 68 86 C64 89 63 96 58 98 C55 99 52 99 50 98 C45 96 44 89 40 86 C36 83 29 85 26 81 C23 77 26 70 25 65 C24 60 18 57 18 52 C18 47 24 43 25 38 C26 33 24 26 28 23 C32 20 39 22 43 18 C46 14 52 8 55 8Z" fill="url(#wg)" stroke="white" stroke-width="4" stroke-linejoin="round"/>
+      <ellipse cx="44" cy="34" rx="12" ry="8" fill="url(#ws)" transform="rotate(-20 44 34)"/>
+      <rect x="38" y="96" width="14" height="18" rx="7" fill="#FFB800" stroke="white" stroke-width="3"/>
+      <rect x="56" y="96" width="14" height="18" rx="7" fill="#FFB800" stroke="white" stroke-width="3"/>
+      <ellipse cx="20" cy="58" rx="9" ry="7" fill="#FFB800" stroke="white" stroke-width="3" transform="rotate(20 20 58)"/>
+      <ellipse cx="90" cy="58" rx="9" ry="7" fill="#FFB800" stroke="white" stroke-width="3" transform="rotate(-20 90 58)"/>
+      <circle cx="14" cy="64" r="7" fill="#FFB800" stroke="white" stroke-width="3"/>
+      <circle cx="96" cy="64" r="7" fill="#FFB800" stroke="white" stroke-width="3"/>
+      <ellipse cx="40" cy="60" rx="9" ry="6" fill="url(#wb)"/>
+      <ellipse cx="70" cy="60" rx="9" ry="6" fill="url(#wb)"/>
+      <path d="M43 50 Q46 46 49 50" stroke="#7a4f00" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <path d="M61 50 Q64 46 67 50" stroke="#7a4f00" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <path d="M47 62 Q55 70 63 62" stroke="#7a4f00" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <circle cx="55" cy="66" r="3" fill="#FF8C8C" opacity="0.6"/>
+    </svg>
+  </div>
+
+  <div class="survey-card">
+
+    <!-- Progress -->
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-label">
+        <span>Contanos un poco 💬</span>
+        <span class="step-indicator" id="stepIndicator">1 de 8</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:12.5%"></div></div>
+    </div>
+
+    <!-- Preguntas -->
+    <div class="question-wrap" id="questionWrap">
+
+      <!-- P1: Edad hijo -->
+      <div class="question-slide active" data-step="1">
+        <div class="q-label">Pregunta 1</div>
+        <div class="q-text">¿Cuántos años tiene tu hijo/a?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this, 1)">Menos de 2</button>
+          <button class="opt-btn" onclick="selectOpt(this, 1)">2 – 4 años</button>
+          <button class="opt-btn" onclick="selectOpt(this, 1)">5 – 7 años</button>
+          <button class="opt-btn" onclick="selectOpt(this, 1)">8 – 10 años</button>
+          <button class="opt-btn" onclick="selectOpt(this, 1)">Más de 10</button>
+        </div>
+      </div>
+
+      <!-- P2: Frecuencia -->
+      <div class="question-slide" data-step="2">
+        <div class="q-label">Pregunta 2</div>
+        <div class="q-text">¿Con qué frecuencia tu hijo mira contenido en YouTube, Netflix u otras plataformas?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this, 2)">Todos los días</button>
+          <button class="opt-btn" onclick="selectOpt(this, 2)">Varias veces por semana</button>
+          <button class="opt-btn" onclick="selectOpt(this, 2)">Una vez por semana</button>
+          <button class="opt-btn" onclick="selectOpt(this, 2)">Casi nunca</button>
+        </div>
+      </div>
+
+      <!-- P3: Contenido inadecuado -->
+      <div class="question-slide" data-step="3">
+        <div class="q-label">Pregunta 3</div>
+        <div class="q-text">¿Alguna vez sentiste que el contenido disponible no era adecuado, era repetitivo o no conectaba con los intereses de tu hijo?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this, 3)">Sí, seguido</button>
+          <button class="opt-btn" onclick="selectOpt(this, 3)">A veces</button>
+          <button class="opt-btn" onclick="selectOpt(this, 3)">No, estoy conforme</button>
+        </div>
+      </div>
+
+      <!-- P4: Qué hiciste (abierta) -->
+      <div class="question-slide" data-step="4">
+        <div class="q-label">Pregunta 4</div>
+        <div class="q-text">Si respondiste sí o a veces, ¿qué hiciste al respecto?</div>
+        <textarea class="open-input" id="openAnswer" rows="3" placeholder="Contanos brevemente..."></textarea>
+      </div>
+
+      <!-- P5: Creaste contenido -->
+      <div class="question-slide" data-step="5">
+        <div class="q-label">Pregunta 5</div>
+        <div class="q-text">¿Alguna vez creaste o buscaste contenido personalizado para tu hijo?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this, 5)">Sí</button>
+          <button class="opt-btn" onclick="selectOpt(this, 5)">No</button>
+        </div>
+      </div>
+
+      <!-- P6: Disposición a pagar -->
+      <div class="question-slide" data-step="6">
+        <div class="q-label">Pregunta 6</div>
+        <div class="q-text">¿Qué tan dispuesto estarías a pagar por una herramienta que genere cuentos animados personalizados en minutos?</div>
+        <div>
+          <div class="scale-wrap">
+            <button class="scale-btn" onclick="selectScale(this, 6)">1</button>
+            <button class="scale-btn" onclick="selectScale(this, 6)">2</button>
+            <button class="scale-btn" onclick="selectScale(this, 6)">3</button>
+            <button class="scale-btn" onclick="selectScale(this, 6)">4</button>
+            <button class="scale-btn" onclick="selectScale(this, 6)">5</button>
+          </div>
+          <div class="scale-labels"><span>Nada dispuesto</span><span>Muy dispuesto</span></div>
+        </div>
+      </div>
+
+      <!-- P7: Precio -->
+      <div class="question-slide" data-step="7">
+        <div class="q-label">Pregunta 7</div>
+        <div class="q-text">¿Cuánto pagarías por un cuento animado personalizado de 2 minutos?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this, 7); checkNoPay(this)">No pagaría</button>
+          <button class="opt-btn" onclick="selectOpt(this, 7); checkNoPay(this)">USD 5</button>
+          <button class="opt-btn" onclick="selectOpt(this, 7); checkNoPay(this)">USD 9</button>
+          <button class="opt-btn" onclick="selectOpt(this, 7); checkNoPay(this)">USD 15</button>
+          <button class="opt-btn" onclick="selectOpt(this, 7); checkNoPay(this)">Más de USD 15</button>
+        </div>
+        <!-- Pregunta de por qué no pagaría -->
+        <div id="noPayReason" style="display:none;margin-top:16px;">
+          <div class="q-label" style="margin-bottom:8px;">¿Por qué no? <span style="opacity:0.5">(elegí una)</span></div>
+          <div class="options">
+            <button class="opt-btn" onclick="selectOpt(this, '7b')">Ya existe algo parecido</button>
+            <button class="opt-btn" onclick="selectOpt(this, '7b')">Me parece caro</button>
+            <button class="opt-btn" onclick="selectOpt(this, '7b')">No creo que sea bueno</button>
+            <button class="opt-btn" onclick="selectOpt(this, '7b')">Mi hijo no vería esto</button>
+            <button class="opt-btn" onclick="selectOpt(this, '7b')">No confío todavía</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- P8: Lo más importante -->
+      <div class="question-slide" data-step="8">
+        <div class="q-label">Pregunta 8</div>
+        <div class="q-text">¿Qué es lo más importante para vos en contenido infantil? <span style="color:rgba(255,255,255,0.4);font-size:0.8rem;">(podés elegir más de uno)</span></div>
+        <div class="options">
+          <button class="opt-btn multi" onclick="toggleMulti(this)">🔒 Seguridad</button>
+          <button class="opt-btn multi" onclick="toggleMulti(this)">🎨 Creatividad</button>
+          <button class="opt-btn multi" onclick="toggleMulti(this)">🗣️ Idioma</button>
+          <button class="opt-btn multi" onclick="toggleMulti(this)">❤️ Valores</button>
+          <button class="opt-btn multi" onclick="toggleMulti(this)">🎉 Entretenimiento</button>
+        </div>
+      </div>
+
+      <!-- P9: Email -->
+      <div class="question-slide" data-step="9">
+        <div class="q-label">¡Último paso! 🎉</div>
+        <div class="q-text">¿Querés ser de los primeros en probar Kudimi?<br/><span style="color:var(--sun);font-size:0.9rem;">50 cupos · $9 USD · acceso anticipado</span></div>
+        <input class="email-input" type="text" id="nameInput" placeholder="Tu nombre" style="margin-bottom:8px;"/>
+        <input class="email-input" type="email" id="emailInput" placeholder="Tu email" />
+      </div>
+
+    </div>
+
+    <!-- Botones nav -->
+    <div class="nav-btns" id="navBtns">
+      <button class="btn-back" id="btnBack" onclick="prevStep()" style="display:none;">← Atrás</button>
+      <button class="btn-next" id="btnNext" onclick="nextStep()">Siguiente →</button>
+    </div>
+
+    <!-- Success -->
+    <div class="success-state" id="successState">
+      <div class="success-icon">🎉</div>
+      <h3>¡Ya estás dentro!</h3>
+      <p>Te contactamos cuando abramos los 50 cupos.<br/><strong>Gracias por ayudarnos a construir Kudimi.</strong></p>
+      <span class="counter" id="counterDisplay">🧒 48 familias ya anotadas</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- PROOF -->
+<div class="proof">
+  <div class="proof-item"><div class="proof-num">∞</div><div class="proof-label">Historias posibles</div></div>
+  <div class="proof-item"><div class="proof-num">&lt;2'</div><div class="proof-label">Para generar un cuento</div></div>
+  <div class="proof-item"><div class="proof-num">100%</div><div class="proof-label">Contenido seguro</div></div>
+</div>
+
+<footer>
+  <span style="font-family:'Baloo 2',cursive;font-weight:800;color:var(--plum);font-size:1rem;">kudimi</span> · Cuentos animados con IA para niños · 2025
+</footer>
+
+</div>
+<!-- ══ PÁGINA BRIEF POST-PAGO ══ -->
+<div id="briefPage" style="display:none;position:relative;z-index:1;padding:48px 24px;min-height:80vh;">
+  <div style="max-width:560px;width:100%;margin:0 auto;">
+    <div style="display:flex;justify-content:center;margin-bottom:-20px;position:relative;z-index:2;">
+      <svg style="animation:float 3s ease-in-out infinite alternate;filter:drop-shadow(0 8px 16px rgba(255,184,0,0.3));" width="90" height="106" viewBox="0 0 110 130" fill="none">
+        <defs>
+          <radialGradient id="bg2" cx="40%" cy="35%" r="60%"><stop offset="0%" stop-color="#FFE566"/><stop offset="100%" stop-color="#FFB800"/></radialGradient>
+          <radialGradient id="bb2" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FF9AA2" stop-opacity="0.7"/><stop offset="100%" stop-color="#FF9AA2" stop-opacity="0"/></radialGradient>
+          <radialGradient id="bs2" cx="30%" cy="25%" r="50%"><stop offset="0%" stop-color="white" stop-opacity="0.55"/><stop offset="100%" stop-color="white" stop-opacity="0"/></radialGradient>
+        </defs>
+        <path d="M55 8 C58 8 62 14 65 18 C69 22 76 20 80 23 C84 26 82 33 83 38 C84 43 90 47 90 52 C90 57 84 60 83 65 C82 70 85 77 82 81 C79 85 72 83 68 86 C64 89 63 96 58 98 C55 99 52 99 50 98 C45 96 44 89 40 86 C36 83 29 85 26 81 C23 77 26 70 25 65 C24 60 18 57 18 52 C18 47 24 43 25 38 C26 33 24 26 28 23 C32 20 39 22 43 18 C46 14 52 8 55 8Z" fill="url(#bg2)" stroke="white" stroke-width="4" stroke-linejoin="round"/>
+        <ellipse cx="44" cy="34" rx="12" ry="8" fill="url(#bs2)" transform="rotate(-20 44 34)"/>
+        <rect x="38" y="96" width="14" height="18" rx="7" fill="#FFB800" stroke="white" stroke-width="3"/>
+        <rect x="56" y="96" width="14" height="18" rx="7" fill="#FFB800" stroke="white" stroke-width="3"/>
+        <ellipse cx="20" cy="58" rx="9" ry="7" fill="#FFB800" stroke="white" stroke-width="3" transform="rotate(20 20 58)"/>
+        <ellipse cx="90" cy="58" rx="9" ry="7" fill="#FFB800" stroke="white" stroke-width="3" transform="rotate(-20 90 58)"/>
+        <circle cx="14" cy="64" r="7" fill="#FFB800" stroke="white" stroke-width="3"/>
+        <circle cx="96" cy="64" r="7" fill="#FFB800" stroke="white" stroke-width="3"/>
+        <ellipse cx="40" cy="60" rx="9" ry="6" fill="url(#bb2)"/>
+        <ellipse cx="70" cy="60" rx="9" ry="6" fill="url(#bb2)"/>
+        <path d="M43 50 Q46 46 49 50" stroke="#7a4f00" stroke-width="3" stroke-linecap="round" fill="none"/>
+        <path d="M61 50 Q64 46 67 50" stroke="#7a4f00" stroke-width="3" stroke-linecap="round" fill="none"/>
+        <path d="M47 62 Q55 70 63 62" stroke="#7a4f00" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <circle cx="55" cy="66" r="3" fill="#FF8C8C" opacity="0.6"/>
+      </svg>
+    </div>
+    <div style="background:var(--plum);border-radius:28px;padding:40px 36px;box-shadow:0 24px 60px rgba(45,27,105,0.25);position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:var(--coral);border-radius:50%;opacity:0.1;"></div>
+      <div style="position:absolute;bottom:-40px;left:-40px;width:160px;height:160px;background:var(--sky);border-radius:50%;opacity:0.08;"></div>
+      <div id="briefForm" style="position:relative;z-index:1;display:flex;flex-direction:column;gap:14px;">
+        <div style="color:var(--sun);font-size:0.78rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;">¡Pago recibido! 🎉</div>
+        <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:1.2rem;color:var(--white);line-height:1.3;">Contanos sobre el cuento de tu hijo</div>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.88rem;margin-bottom:4px;">Con estos datos empezamos a producir tu cuento. Lo tenés listo en menos de 48hs.</p>
+        <input class="email-input" type="text" id="briefChild" placeholder="Nombre del hijo/a" />
+        <input class="email-input" type="number" id="briefAge" placeholder="Edad del hijo/a" min="1" max="12" />
+        <textarea class="email-input" id="briefIdea" rows="3" style="border-radius:16px;resize:none;" placeholder="La idea del cuento (ej: un dragón que aprende a compartir)"></textarea>
+        <input class="email-input" type="text" id="briefContact" placeholder="WhatsApp o email para la entrega" />
+        <button onclick="submitBrief()" style="width:100%;padding:16px;border-radius:50px;border:none;background:var(--sun);color:var(--plum);font-family:'Nunito',sans-serif;font-weight:800;font-size:1.05rem;cursor:pointer;box-shadow:0 4px 20px rgba(255,212,71,0.3);transition:transform 0.2s;">Enviar y empezar mi cuento ✨</button>
+        <p style="color:rgba(255,255,255,0.35);font-size:0.75rem;text-align:center;">Te contactamos por WhatsApp o email para coordinar los detalles.</p>
+      </div>
+      <div id="briefSuccess" style="display:none;flex-direction:column;align-items:center;gap:12px;text-align:center;position:relative;z-index:1;padding:8px 0;">
+        <div style="width:72px;height:72px;background:var(--mint);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;animation:pop 0.5s cubic-bezier(.34,1.56,.64,1) both;">🎬</div>
+        <h3 style="font-family:'Nunito',sans-serif;font-weight:800;font-size:1.5rem;color:var(--white);">¡Listo, recibimos todo!</h3>
+        <p style="color:rgba(255,255,255,0.65);font-size:0.95rem;line-height:1.6;">En menos de <strong style="color:var(--sun);">48 horas</strong> te mandamos el cuento de tu hijo.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL  = 'https://osuydyirdbgzhjhkwxtq.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zdXlkeWlyZGJnemhqaGt3eHRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2MjM2NjgsImV4cCI6MjA4OTE5OTY2OH0.juAmZbCDVRfRPIUH5UR6moshyWVqljqkc6yLi7eBu1o';
+
+  const TOTAL = 9;
+  let current = 1;
+  const answers = {};
+  let count = 48;
+
+  function updateProgress() {
+    document.getElementById('stepIndicator').textContent = `${current} de ${TOTAL}`;
+    document.getElementById('progressFill').style.width = `${(current / TOTAL) * 100}%`;
+    document.getElementById('btnBack').style.display = current > 1 ? 'block' : 'none';
+    const btnNext = document.getElementById('btnNext');
+    btnNext.textContent = current === TOTAL ? 'Unirme a la waitlist ✨' : 'Siguiente →';
+    checkNextBtn();
+  }
+
+  function showStep(n) {
+    document.querySelectorAll('.question-slide').forEach(s => s.classList.remove('active'));
+    const target = document.querySelector(`.question-slide[data-step="${n}"]`);
+    if (target) { target.classList.add('active'); }
+    updateProgress();
+  }
+
+  // Pasos opcionales (abierta y email)
+  const OPTIONAL_STEPS = [4, 9];
+
+  function checkNextBtn() {
+    const btnNext = document.getElementById('btnNext');
+    if (OPTIONAL_STEPS.includes(current)) { btnNext.disabled = false; return; }
+    const ans = answers[current];
+    const hasAnswer = ans !== undefined && ans !== '' && !(Array.isArray(ans) && ans.length === 0);
+    btnNext.disabled = !hasAnswer;
+  }
+
+  function selectOpt(btn, step) {
+    btn.closest('.options').querySelectorAll('.opt-btn:not(.multi)').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    answers[step] = btn.textContent;
+    checkNextBtn();
+  }
+
+  function toggleMulti(btn) {
+    btn.classList.toggle('selected');
+    answers[8] = [...btn.closest('.options').querySelectorAll('.selected')].map(b => b.textContent);
+    checkNextBtn();
+  }
+
+  function selectScale(btn, step) {
+    btn.closest('.scale-wrap').querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    answers[step] = btn.textContent;
+    checkNextBtn();
+  }
+
+  function nextStep() {
+    if (current === TOTAL) { submitForm(); return; }
+    if (current === 4) { answers[4] = document.getElementById('openAnswer').value; }
+    current++;
+    showStep(current);
+    checkNextBtn();
+    document.getElementById('survey').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function prevStep() {
+    if (current > 1) { current--; showStep(current); }
+  }
+
+  async function submitForm() {
+    const name  = document.getElementById('nameInput').value.trim();
+    const email = document.getElementById('emailInput').value.trim();
+    if (!name || !email) { shake(document.getElementById('emailInput')); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { shake(document.getElementById('emailInput')); return; }
+    answers.name = name; answers.email = email;
+
+    const btnNext = document.getElementById('btnNext');
+    btnNext.disabled = true;
+    btnNext.textContent = 'Guardando... ⏳';
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-waitlist-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON}`
+        },
+        body: JSON.stringify({
+          name, email,
+          q1: answers[1], q2: answers[2], q3: answers[3],
+          q4: answers[4], q5: answers[5], q6: answers[6],
+          q7: answers[7], q7b: answers['7b'], q8: answers[8]
+        })
+      });
+      if (!res.ok) throw new Error('Error al guardar');
+    } catch (err) {
+      console.error(err);
+      // Show success anyway — don't block the user on a network hiccup
+    }
+
+    count++;
+    document.getElementById('counterDisplay').textContent = `🧒 ${count} familias ya anotadas`;
+    document.getElementById('progressWrap').style.display = 'none';
+    document.getElementById('questionWrap').style.display = 'none';
+    document.getElementById('navBtns').style.display = 'none';
+    document.getElementById('successState').classList.add('show');
+  }
+
+  function shake(el) {
+    el.style.animation = 'none'; el.offsetHeight;
+    el.style.animation = 'shake 0.4s ease';
+    setTimeout(() => el.style.animation = '', 400);
+  }
+
+  document.querySelector('.nav-cta').addEventListener('click', e => {
+    e.preventDefault();
+    document.getElementById('survey').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  function checkNoPay(btn) {
+    const noPayDiv = document.getElementById('noPayReason');
+    if (btn.textContent === 'No pagaría') {
+      noPayDiv.style.display = 'block';
+    } else {
+      noPayDiv.style.display = 'none';
+      delete answers['7b'];
+    }
+  }
+
+  async function submitBrief() {
+    const child   = document.getElementById('briefChild').value.trim();
+    const age     = document.getElementById('briefAge').value.trim();
+    const idea    = document.getElementById('briefIdea').value.trim();
+    const contact = document.getElementById('briefContact').value.trim();
+    if (!child || !age || !idea || !contact) {
+      shake(document.getElementById('briefForm'));
+      return;
+    }
+
+    const submitBtn = document.querySelector('#briefForm button');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Enviando... ⏳';
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-brief-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON}`
+        },
+        body: JSON.stringify({
+          child_name: child,
+          child_age: age,
+          story_idea: idea,
+          contact
+        })
+      });
+      if (!res.ok) throw new Error('Error al guardar');
+    } catch (err) {
+      console.error(err);
+      // Show success anyway — don't block the user
+    }
+
+    document.getElementById('briefForm').style.display = 'none';
+    document.getElementById('briefSuccess').style.display = 'flex';
+  }
+
+  // Detectar si viene de un pago (?paid=true)
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('paid') === 'true') {
+    document.getElementById('mainContent').style.display = 'none';
+    document.getElementById('briefPage').style.display = 'block';
+    window.scrollTo(0, 0);
+  }
+</script>
+
+<style>
+  @keyframes shake {
+    0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)}
+    40%{transform:translateX(8px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)}
+  }
+</style>
+
+</body>
+</html>
+<!-- REEMPLAZADO POR SCRIPT ABAJO -->
