@@ -461,8 +461,11 @@
       <div class="success-icon">🎉</div>
       <h3>¡Ya estás dentro!</h3>
       <p>Reservá tu cupo ahora antes de que se agoten.<br/><strong>Solo quedan 50 lugares a $9 USD.</strong></p>
-      <a href="https://mpago.la/1h7TWAZ" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;padding:14px 28px;border-radius:50px;background:var(--sun);color:var(--plum);font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;text-decoration:none;box-shadow:0 4px 20px rgba(255,212,71,0.35);transition:transform 0.2s cubic-bezier(.34,1.56,.64,1),box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px) scale(1.02)';this.style.boxShadow='0 8px 28px rgba(255,212,71,0.5)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 4px 20px rgba(255,212,71,0.35)'">
-        💳 Reservar mi cupo por $9 USD
+      <a href="https://buy.polar.sh/polar_cl_XhsbleGaoAbaQcoWHqSYHScn1ddLgDWH1s1cP2f11SM" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;padding:14px 28px;border-radius:50px;background:var(--sun);color:var(--plum);font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;text-decoration:none;box-shadow:0 4px 20px rgba(255,212,71,0.35);transition:transform 0.2s cubic-bezier(.34,1.56,.64,1),box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px) scale(1.02)';this.style.boxShadow='0 8px 28px rgba(255,212,71,0.5)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 4px 20px rgba(255,212,71,0.35)'">
+        💳 Pagar con tarjeta (USD)
+      </a>
+      <a href="https://mpago.la/1h7TWAZ" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;padding:14px 28px;border-radius:50px;background:var(--plum-light);color:var(--white);font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;text-decoration:none;box-shadow:0 4px 20px rgba(45,27,105,0.3);transition:transform 0.2s cubic-bezier(.34,1.56,.64,1),box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px) scale(1.02)';this.style.boxShadow='0 8px 28px rgba(45,27,105,0.45)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 4px 20px rgba(45,27,105,0.3)'">
+        💳 Pagar con Mercado Pago (ARS)
       </a>
       <span class="counter" id="counterDisplay">🧒 48 familias ya anotadas</span>
     </div>
@@ -514,13 +517,13 @@
       <div id="briefForm" style="position:relative;z-index:1;display:flex;flex-direction:column;gap:14px;">
         <div style="color:var(--sun);font-size:0.78rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;">¡Pago recibido! 🎉</div>
         <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:1.2rem;color:var(--white);line-height:1.3;">Contanos sobre el cuento de tu hijo</div>
-        <p style="color:rgba(255,255,255,0.6);font-size:0.88rem;margin-bottom:4px;">Con estos datos empezamos a producir tu cuento. Lo tenés listo en menos de 48hs.</p>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.88rem;margin-bottom:4px;">Con estos datos empezamos a producir tu cuento. Lo tenés listo en hasta 5 días hábiles.</p>
         <input class="email-input" type="text" id="briefChild" placeholder="Nombre del hijo/a" />
         <input class="email-input" type="number" id="briefAge" placeholder="Edad del hijo/a" min="1" max="12" />
         <textarea class="email-input" id="briefIdea" rows="3" style="border-radius:16px;resize:none;" placeholder="La idea del cuento (ej: un dragón que aprende a compartir)"></textarea>
         <input class="email-input" type="text" id="briefContact" placeholder="WhatsApp o email para la entrega" />
         <button onclick="submitBrief()" style="width:100%;padding:16px;border-radius:50px;border:none;background:var(--sun);color:var(--plum);font-family:'Nunito',sans-serif;font-weight:800;font-size:1.05rem;cursor:pointer;box-shadow:0 4px 20px rgba(255,212,71,0.3);transition:transform 0.2s;">Enviar y empezar mi cuento ✨</button>
-        <p style="color:rgba(255,255,255,0.35);font-size:0.75rem;text-align:center;">Te contactamos por WhatsApp o email para coordinar los detalles.</p>
+        <p style="color:rgba(255,255,255,0.35);font-size:0.75rem;text-align:center;">Te avisamos cuando tu cuento esté listo.</p>
       </div>
       <div id="briefSuccess" style="display:none;flex-direction:column;align-items:center;gap:12px;text-align:center;position:relative;z-index:1;padding:8px 0;">
         <div style="width:72px;height:72px;background:var(--mint);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;animation:pop 0.5s cubic-bezier(.34,1.56,.64,1) both;">🎬</div>
@@ -538,7 +541,33 @@
   const TOTAL = 9;
   let current = 1;
   const answers = {};
-  let count = 48;
+
+  async function fetchWaitlistCount() {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/waitlist?select=id`, {
+        headers: {
+          'apikey': SUPABASE_ANON,
+          'Authorization': `Bearer ${SUPABASE_ANON}`,
+          'Prefer': 'count=exact',
+          'Range': '0-0'
+        }
+      });
+      const range = res.headers.get('Content-Range');
+      if (range) {
+        const total = parseInt(range.split('/')[1], 10);
+        if (!isNaN(total)) return total;
+      }
+    } catch (e) { console.error(e); }
+    return null;
+  }
+
+  function updateCounter(n) {
+    if (n !== null) {
+      document.getElementById('counterDisplay').textContent = `🧒 ${n} de 50 familias ya anotadas`;
+    }
+  }
+
+  fetchWaitlistCount().then(updateCounter);
 
   function updateProgress() {
     document.getElementById('stepIndicator').textContent = `${current} de ${TOTAL}`;
@@ -631,8 +660,7 @@
       // Show success anyway — don't block the user on a network hiccup
     }
 
-    count++;
-    document.getElementById('counterDisplay').textContent = `🧒 ${count} familias ya anotadas`;
+    fetchWaitlistCount().then(updateCounter);
     document.getElementById('progressWrap').style.display = 'none';
     document.getElementById('questionWrap').style.display = 'none';
     document.getElementById('navBtns').style.display = 'none';
