@@ -25,7 +25,7 @@ serve(async (req) => {
   }
 
   try {
-    const { child_name, child_age, story_idea, contact } = await req.json()
+    const { child_name, child_age, story_idea, contact, payment_method } = await req.json()
 
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
@@ -33,7 +33,7 @@ serve(async (req) => {
     )
 
     const { error: dbError } = await supabase.from('briefs').insert([{
-      child_name, child_age, story_idea, contact
+      child_name, child_age, story_idea, contact, payment_method
     }])
     if (dbError) throw dbError
 
@@ -91,9 +91,13 @@ serve(async (req) => {
               <td style="padding:10px 0;color:#9a8aba;font-size:14px;">Idea del cuento</td>
               <td style="padding:10px 0;font-weight:bold;color:#2D1B69;">${story_idea}</td>
             </tr>
-            <tr>
+            <tr style="border-bottom:1px solid #e0d8f0;">
               <td style="padding:10px 0;color:#9a8aba;font-size:14px;">Contacto</td>
               <td style="padding:10px 0;font-weight:bold;color:#2D1B69;">${contact}</td>
+            </tr>
+            <tr>
+              <td style="padding:10px 0;color:#9a8aba;font-size:14px;">Pago vía</td>
+              <td style="padding:10px 0;font-weight:bold;color:#2D1B69;">${payment_method ?? '—'}</td>
             </tr>
           </table>
         </div>

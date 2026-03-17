@@ -172,10 +172,25 @@
 
     @media (max-width: 600px) {
       nav { padding: 14px 20px; }
-      .hero { padding: 28px 16px 16px; }
+      .hero { padding: 24px 16px 12px; }
+      .hero-logo-wrap { gap: 8px; margin-bottom: 18px; }
+      .hero-mascot { width: 78px !important; height: 92px !important; }
+      .hero-letter { font-size: clamp(42px, 11vw, 60px) !important; -webkit-text-stroke: 6px white !important; }
+      .hero-sub { font-size: 1rem; }
+      .video-wrapper { margin-bottom: 40px; }
+      .section { margin-bottom: 48px; }
+      .steps { grid-template-columns: 1fr; }
+      .proof { gap: 28px; }
       .survey-card { padding: 32px 20px 28px; }
-      .scale-wrap { gap: 5px; }
+      .scale-wrap { gap: 5px; flex-wrap: wrap; }
       .scale-btn { width: 38px; height: 38px; font-size: 0.85rem; }
+      .opt-btn { font-size: 0.85rem; padding: 9px 14px; }
+      .brief-card { padding: 28px 18px !important; }
+    }
+    @media (max-width: 380px) {
+      .hero-logo-wrap { flex-direction: column; gap: 4px; }
+      .hero-mascot { width: 70px !important; height: 83px !important; }
+      .hero-letter { font-size: clamp(40px, 13vw, 52px) !important; }
     }
   </style>
 </head>
@@ -520,7 +535,7 @@
         <circle cx="55" cy="66" r="3" fill="#FF8C8C" opacity="0.6"/>
       </svg>
     </div>
-    <div style="background:var(--plum);border-radius:28px;padding:40px 36px;box-shadow:0 24px 60px rgba(45,27,105,0.25);position:relative;overflow:hidden;">
+    <div class="brief-card" style="background:var(--plum);border-radius:28px;padding:40px 36px;box-shadow:0 24px 60px rgba(45,27,105,0.25);position:relative;overflow:hidden;">
       <div style="position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:var(--coral);border-radius:50%;opacity:0.1;"></div>
       <div style="position:absolute;bottom:-40px;left:-40px;width:160px;height:160px;background:var(--sky);border-radius:50%;opacity:0.08;"></div>
       <div id="briefForm" style="position:relative;z-index:1;display:flex;flex-direction:column;gap:14px;">
@@ -744,7 +759,8 @@
           child_name: child,
           child_age: age,
           story_idea: idea,
-          contact
+          contact,
+          payment_method: paymentMethod
         })
       });
       if (!res.ok) throw new Error('Error al guardar');
@@ -757,8 +773,9 @@
     document.getElementById('briefSuccess').style.display = 'flex';
   }
 
-  // Detectar si viene de un pago (?paid=true)
+  // Detectar si viene de un pago (?paid=true&via=polar|mercadopago)
   const urlParams = new URLSearchParams(window.location.search);
+  const paymentMethod = urlParams.get('via') || null;
   if (urlParams.get('paid') === 'true') {
     document.getElementById('mainContent').style.display = 'none';
     document.getElementById('briefPage').style.display = 'block';
